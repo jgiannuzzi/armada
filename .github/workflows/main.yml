@@ -17,8 +17,9 @@ jobs:
         run: make build-ci
       - name: Start cluster for e2e tests
         run: |
-          docker-compose -p e2e up -d
+          docker-compose -p e2e up &
           docker-compose -p e2e exec -T kubernetes sh -c "until curl -s -f http://localhost:10080/kubernetes-ready; do sleep 1; done"
+          echo ready
         working-directory: e2e/setup
       - name: Run tests
         run: PATH=${PATH}:${PWD}/bin INTEGRATION_ENABLED=true go test -v ./e2e/test/... -count=1
