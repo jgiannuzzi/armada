@@ -5,7 +5,7 @@ services:
     image: nats-streaming
     command: -p 4223 -m 8223
   kubernetes:
-    image: bsycorp/kind:v1.17.9
+    image: bsycorp/kind:v1.17.10
     privileged: true
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:10080/kubernetes-ready"]
@@ -14,14 +14,14 @@ services:
       retries: 5
       start_period: 30s
   setup-namespace:
-    image: bsycorp/kind:v1.17.9
+    image: bsycorp/kind:v1.17.10
     entrypoint: ["sh", "-c", "until wget -q -O /dev/null http://kubernetes:10080/kubernetes-ready; do sleep 1; done; wget -q -O - http://kubernetes:10080/config | sed 's/localhost/kubernetes/' > /tmp/kubeconfig; KUBECONFIG=/tmp/kubeconfig kubectl apply -f /setup/namespace-with-anonymous-user.yaml"]
     volumes:
       - .:/setup
     depends_on:
       - kubernetes
   display-node-stats:
-    image: bsycorp/kind:v1.17.9
+    image: bsycorp/kind:v1.17.10
     entrypoint: ["sh", "-c", "until wget -q -O /dev/null http://kubernetes:10080/kubernetes-ready; do sleep 1; done; wget -q -O - http://kubernetes:10080/config | sed 's/localhost/kubernetes/' > /tmp/kubeconfig; while :; do KUBECONFIG=/tmp/kubeconfig kubectl get nodes -o jsonpath=\"{.items[0].status['capacity', 'allocatable']['cpu', 'memory']}\" | xargs; sleep 1; done"]
     volumes:
       - .:/setup
