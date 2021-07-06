@@ -5,7 +5,7 @@ services:
     image: nats-streaming
     command: -p 4223 -m 8223
   kubernetes:
-    image: bsycorp/kind:v1.17.9
+    image: bsycorp/kind:v1.17.10
     privileged: true
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:10080/kubernetes-ready"]
